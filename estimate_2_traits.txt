@@ -1,0 +1,33 @@
+Assumptions:
+#1 1000 Traits to choose from (for getting the order of magnitude 1020 or 980 does not make a significant difference)
+#2 traits are uniformly distributed (Since we have no access to the source code, that's the best assumption)
+#3 Choosing one trait does not influence the chance to choose another trait [ P(T1) = P(T2) ] (decreasing a 1/1023 to a 1/1022 does not change the magnitude)
+#4 Some stochastic schuffeling might get a facor of 2 in there - but we are concered about the magnitude
+
+
+Nomenclature:
+T1 == find trait #1 for the survivor traits 
+T2 == find trait #2 for the survivor traits
+nT1 == not find trait #1 within the survivor traits
+nT2 == not find trait #2 within the survivor traits
+
+Keywords:
+NOT: the opposite of the event
+AND: both events take place at the same time
+"|": conditional operator - i.e. P(A|B) == Probability of A happening if B has occured.
+
+
+Getting the probabilities:
+
+P(T1) = P(T2) = 1 - P(nT1)^3 (Counter Event to not getting Trait 1/2 at all)
+P(T2 | T1) = 1 - P(nT2)^2 (given we found trait #1 - there are two more spots left for finding trait #2) (assumption #4)
+P(T1 AND T2) = P(T2 | T1) * P(T1) (Bayes theorem)
+Therefore: P(NOT(T1 AND T2)) = 1 - P(T1 AND T2)
+
+
+'X' rerolls are needed for to get a 'Y' chance of getting a match ( Y*100 == percentage.. ):
+    1 - P(NOT(T1 and T2))^X > Y (if you got through to this, it should be obvious)
+<=> X > ln(1-Y) / ln(P(NOT(T1 and T2)) (basic algebra)
+<=> X > 268641,...
+
+-> Magnitude of of 1-2 days for rerolling for 2 traits for 80% chance of a match. 
