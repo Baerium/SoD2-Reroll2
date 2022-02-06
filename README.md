@@ -11,7 +11,7 @@ This tool does not speed up the process very much but it does automate it. For a
 
 Instructions:
 
-1. To run the program, download the https://github.com/Baerium/SoD2-Reroll2/releases/download/v2.0/SoD2_Trait_Reroll_2.0.rar file from the latest release and extract the files. Make sure they are all in the same folder and run "SoD2 Reroll.exe".
+1. To run the program, download the archived file from https://github.com/Baerium/SoD2-Reroll2/releases from the latest release and extract the files. Make sure they are all in the same folder and run "SoD2 Reroll.exe".
 2. Pick any traits you want to search for in the dropdon boxes or leave any blank to not search for any traits for that survivor. 
 3. The numeric field ith the label 'wait after start (seconds)' refers to the number of seconds the program will wait after pressing start before giving any inputs. This is to give time to tab into the game. Make sure the game is open and ready to reroll survivorrs before starting the program.
 4. Choose the resolution that your game is running in so the program knows where to look for skills as the screen reader will not look at the whole screen.
