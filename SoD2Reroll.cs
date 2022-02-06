@@ -258,18 +258,14 @@ namespace SoD2_Reroll
                 // only match if there are more found traits than searched ones (including the empty ones)
                 match = foundActiveTraits >= searchedForTraits;
 
-                /*
-                foreach(Boolean check in traitsChecked)
-                    match |= check;
-                */
 
                 if(match)
                 {
-                    sw.WriteLine("Found for survivor" + survivorNumber + "'" + activeTraits[survivorNumber - 1, 0] + "'" + activeTraits[survivorNumber - 1, 1] + "'" + activeTraits[survivorNumber - 1, 2] + "' in " + listToString(traitsList));
+                    log("Found for survivor" + survivorNumber + "'" + activeTraits[survivorNumber - 1, 0] + "'" + activeTraits[survivorNumber - 1, 1] + "'" + activeTraits[survivorNumber - 1, 2] + "' in " + listToString(traitsList));
                 }
                 else
                 {
-                    sw.WriteLine("NOT Found for survivor" + survivorNumber + "'" + activeTraits[survivorNumber - 1, 0] + "'" + activeTraits[survivorNumber - 1, 1] + "'" + activeTraits[survivorNumber - 1, 2] + "' in " + listToString(traitsList));
+                    log("NOT Found for survivor" + survivorNumber + "'" + activeTraits[survivorNumber - 1, 0] + "'" + activeTraits[survivorNumber - 1, 1] + "'" + activeTraits[survivorNumber - 1, 2] + "' in " + listToString(traitsList));
                 }
 
                 sw.Flush();
@@ -287,53 +283,12 @@ namespace SoD2_Reroll
             return result;
         }
 
-
-        /* Old logic - just bullshit
-        private bool TextMatch(int leftTrait, int topTrait, int leftSkill, int topSkill, Bitmap traitsOrg, Bitmap skills, int survivorNumber)
+        // function for logging stuff
+        private void log(string s)
         {
-            bool match;
-
-            Bitmap traits = ApplyTresholdAndInvert(traitsOrg, 100, "testtrait" + leftTrait.ToString());
-            //Bitmap skills = ApplyTresholdAndInvert(skillsOrg, 100, "testskill" + leftSkill.ToString());
-
-            using (var objOcr = OcrApi.Create())
-            { 
-                objOcr.Init(Patagames.Ocr.Enums.Languages.English);
-                string plainTextTraits = objOcr.GetTextFromImage(traits);
-                string plainTextSkills = objOcr.GetTextFromImage(skills);
-                sw.WriteLine("Plain Traits text: \n" + plainTextTraits);
-                sw.Flush();
-                string formattedTextTraits = Regex.Replace(plainTextTraits, @"\s+", "").ToUpper();
-                string formattedTextSkills = Regex.Replace(plainTextSkills, @"\s+", "").ToUpper();
-
-                if (ComputeStringDistance(activeTraits[survivorNumber - 1, 0], formattedTextTraits) <= (formattedTextTraits.Length - activeTraits[survivorNumber - 1, 0].Length) + 1 &&
-                    ComputeStringDistance(activeTraits[survivorNumber - 1, 1], formattedTextTraits) <= (formattedTextTraits.Length - activeTraits[survivorNumber - 1, 1].Length) + 1 &&
-                    ComputeStringDistance(activeTraits[survivorNumber - 1, 2], formattedTextTraits) <= (formattedTextTraits.Length - activeTraits[survivorNumber - 1, 2].Length) + 1 &&
-                    ComputeStringDistance(activeSkills[survivorNumber - 1], formattedTextSkills) <= (formattedTextSkills.Length - activeSkills[survivorNumber - 1].Length) + 1)
-                {
-                    match = true;
-                    sw.WriteLine("Found for survivor" + survivorNumber + "'" + activeTraits[survivorNumber - 1, 0] + "'" + activeTraits[survivorNumber - 1, 1] + "'" + activeTraits[survivorNumber - 1, 2] + "' in " + formattedTextTraits);
-                }
-                else
-                {
-                    match = false;
-                    sw.WriteLine("NOT Found for survivor" + survivorNumber + "'" + activeTraits[survivorNumber - 1, 0] + "'" + activeTraits[survivorNumber - 1, 1] + "'" + activeTraits[survivorNumber - 1, 2] + "' in " + formattedTextTraits);
-                    //sw.WriteLine("DesiredTraits: " + activeTraits[survivorNumber - 1, 0] + " -- " + activeTraits[survivorNumber - 1, 0] + " -- " + activeTraits[survivorNumber - 1, 0]);
-                    //sw.WriteLine("Could not find traits:\n " + plainTextTraits + " \n" + formattedTextTraits);
-                    //sw.WriteLine("Could not find skills:\n" + plainTextSkills + "\n" + formattedTextSkills);
-                    //sw.WriteLine();
-                }
-                
-
-                //sw.WriteLine(formattedTextTraits);
-                //sw.WriteLine(formattedTextSkills);
-                sw.Flush();
-
-            }
-
-            return match;
+            sw.WriteLine("[" + DateTime.Now.ToString("hh:mm:ss tt") + "]: " + s);
+            sw.Flush();
         }
-        */
 
         public Bitmap ConvertToBitmap(string fileName)
         {
@@ -363,39 +318,6 @@ namespace SoD2_Reroll
                 rerollTimer.Enabled = true;
             }
         }
-
-        //Get the distance between two strings of different lengths
-        public static int ComputeStringDistance(string input1, string input2)
-        {
-            var bounds = new { Height = input1.Length + 1, Width = input2.Length + 1 };
-            int[,] matrix = new int[bounds.Height, bounds.Width];
-            for (int height = 0; height < bounds.Height; height++)
-            {
-                matrix[height, 0] = height;
-            }
-            for (int width = 0; width < bounds.Width; width++)
-            {
-                matrix[0, width] = width;
-            }
-            for (int height = 1; height < bounds.Height; height++)
-            {
-                for (int width = 1; width < bounds.Width; width++)
-                {
-                    int cost = (input1[height - 1] == input2[width - 1]) ? 0 : 1;
-                    int insertion = matrix[height, width - 1] + 1;
-                    int deletion = matrix[height - 1, width] + 1;
-                    int substitution = matrix[height - 1, width - 1] + cost;
-                    int distance = Math.Min(insertion, Math.Min(deletion, substitution));
-                    if (height > 1 && width > 1 && input1[height - 1] == input2[width - 2] && input1[height - 2] == input2[width - 1])
-                    {
-                        distance = Math.Min(distance, matrix[height - 2, width - 2] + cost);
-                    }
-                    matrix[height, width] = distance;
-                }
-            }
-            return matrix[bounds.Height - 1, bounds.Width - 1];
-        }
-
 
         // Compute Levenstien Distance
         // from https://gist.github.com/Davidblkx/e12ab0bb2aff7fd8072632b396538560
@@ -597,6 +519,10 @@ namespace SoD2_Reroll
             {
                 MessageBox.Show("Could not save images:" + Environment.NewLine + ex.ToString());
             }
+
+            // TODO: 
+            // show images to enter Black/White Filter treshold
+            // maybe also give the option to set distance treshold
             
             //Display finish notification
             MessageBox.Show("Test complete." + Environment.NewLine + "Images saved in " + Directory.GetCurrentDirectory() + "\\TestImages");
